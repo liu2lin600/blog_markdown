@@ -44,9 +44,10 @@ bash特性介绍
 
 常用技巧
 
+- `!STR`：调用最近以STR开头的命令  
 - `!5`：调用第5个历史，为负数表示倒数    
 - `!5:2`：调用第5条历史的第2个参数  
-- `!STR`：调用最近以STR开头的命令  
+- `!-2:2`：调用倒数第二个命令第2个参数  
 - `ESC`+`.`：调用最后一条命令，注意按`ESC`后松开再按`.`  
 - `!$`：最后一条命令的最后一个参数 (!5:$ 第5条命令最后参数，下同)  
 - `!^`：最后一条命令的第一个参数
@@ -59,6 +60,7 @@ bash特性介绍
 `ctrl+e`：光标移到行尾  
 `ctrl+u`：删除光标到行首  
 `ctrl+k`：删除光标到行尾  
+`ctrl+w`：向前删除一个词  
 `ctrl+l`：清屏  
 `ctrl+c`：取消命令的执行  
 `ctrl+r`：搜索命令历史
@@ -179,19 +181,60 @@ file `which cat`
 touch $(date +%F).log
 ```
 
+### 12. 配置文件 
+#### 1、登录类型
+
+- 交互式登录shell进程
+  > 1、通过某终端输入账号密码后登录shell
+  > 2、使用su命令：`su - USER`, 或 `su -l USER`
+
+- 非交互式登录shell进程
+  > 1、su USER 执行的登录切换
+  > 2、图形界面下打开的终端
+  > 3、运行脚本
+
+#### 2、配置文件类型
+
+- profile类：为交互式登录的shell进程提供配置
+
+  > 功用：用于定义环境变量，运行命令或脚本
+  > 全局：`/etc/profile`、`/etc/profile.d/*.sh`
+  > 个人：`~/.bash_profile`
+
+- bashrc类：为非交互式登录的shell进程提供配置
+
+  > 功用：定义本地变量；定义命令别名
+  > 全局：`/etc/bashrc`
+  > 个人：`~/.bashrc`
+
+#### 3、bash路径搜索
+
+- 交互式登录shell进程：
+  > `/etc/profile` -> `/etc/profile.d/*` -> `~/.bash_profile` -> `~/.bashrc` -> `/etc/bashrc`
+
+- 非交互式登录shell进程：
+  > `~/.bashrc` -> `/etc/bashrc` -> `/etc/profile.d/*`
+
+#### 4、定义生效方法
+
+- 命令行上定义的变量和别名，其作用域为当前shell进程的生命周期
+- 配置文件定义的特性，只对之后新启动的shell进程有效
+- 通过命令行重复定义；或让shell进程重读配置文件，使用 `.` 或 `source` 来生效配置
+
+
 ### 13. 其它
 
 - 执行上条命令，取代指定字符
 
-```bash
-scp xxx data02:/ect/
-^data02^data03 			# 等效于scp xxx data03:/ect/
-```
+    ```bash
+    scp xxx data02:/ect/
+    ^data02^data03 			# 等效于scp xxx data03:/ect/
+    ```
 
 - 排除
 
-```bash
-rm !(*.py) 		# 删除除py结尾的其它文件
-```
+    ```bash
+    rm !(*.py) 		# 删除除py结尾的其它文件
+    ```
 
-大体上就是这么多，以后碰到再添加
+
