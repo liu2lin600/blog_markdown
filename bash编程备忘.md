@@ -262,7 +262,7 @@ EOF
 - 多线程
 
 ```
-# 使用(CMD)方式fork一个子进程来执行
+# 1. 使用(CMD)方式fork一个子进程来执行
 
 num=10
 function multi_test(){
@@ -277,6 +277,36 @@ done
 
 wait
 echo "All job done!"
+```
+
+```
+# 2. 使用文件描述符及管道方式的多进程
+
+Nproc=24
+trap "exec 999>&-;exec 999<&-;exit 0" 2
+start=`date +%s`
+
+Pfifo="/tmp/$$.fifo"
+mkfifo $Pfifo
+exec 999<>$Pfifo
+rm -f $Pfifo
+
+for((i=1; i<=$Nproc; i++)); do
+    echo
+done >&999
+
+for i in {1..100}; do
+    read -u999
+    {
+        echo ${i}; sleep 1
+        echo >&999
+    }&
+done
+
+wait 
+exec 999>&-;exec 999<&-
+end=`date +%s`
+echo "Time:  $(($end-$start))s"
 ```
 
 - vim编辑远程文件
