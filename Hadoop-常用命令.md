@@ -1,6 +1,6 @@
 ---
 title: Hadoop 常用命令
-date: 2018-06-22 10:43:19
+date: 2018-01-22 10:43:19
 categories: hadoop
 tags: [hadoop, hdfs, yarn]
 ---
